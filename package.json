@@ -5,7 +5,7 @@
   "main": "./dist/extension.js",
   "name": "xkool-coder-plugin",
   "description": "xkool code vscode plugin",
-  "repository": "",
+  "repository": "https://github.com/kunsam/xk-coder-plugin",
   "engines": {
     "vscode": "^1.56.0"
   },
