@@ -9,6 +9,7 @@ import * as parseStaticImports from "parse-static-imports";
 import { LAZY_IMPORT_FILES } from "./lazy_files_config";
 import { CoderNamespace } from "../../base/typing";
 import { ImportManager } from "../../base/imports_manager";
+import { AppRouterManager } from "../../base/router_manager";
 
 export default class ImportManageCommand {
   private importVisitedSet = new Set();
@@ -90,8 +91,12 @@ export default class ImportManageCommand {
       vscode.commands.registerCommand(
         "XkCoderPlugin.refreshExtensionConfig",
         () => {
-          this.refresh().then(() => {
-            vscode.window.showInformationMessage("刷新成功！");
+          this.refresh(true).then((success) => {
+            if (success) {
+              vscode.window.showInformationMessage("刷新成功！", {
+                modal: true,
+              });
+            }
           });
         }
       )
@@ -119,11 +124,9 @@ export default class ImportManageCommand {
         }
       )
     );
-
     this.impManager = new ImportManager<CoderNamespace.ImportNode>(
       this.importGraph
     );
-
     context.subscriptions.push(
       vscode.commands.registerCommand("XkCoderPlugin.getImportFileList", () => {
         const uri = vscode.window.activeTextEditor.document.uri;
@@ -150,11 +153,62 @@ export default class ImportManageCommand {
         );
       })
     );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand("XkCoderPlugin.getRoutePaths", () => {
+        const uri = vscode.window.activeTextEditor.document.uri;
+        if (!uri) {
+          vscode.window.showInformationMessage("不存在打开的文档");
+          return;
+        }
+        try {
+          const importFilePaths = this.impManager.calPrevFileList(
+            uri.fsPath,
+            true
+          );
+          console.log(importFilePaths, this.impManager, "importFilePaths");
+          const results = AppRouterManager.queryFileRoutePaths(
+            uri.fsPath,
+            importFilePaths.map((ifp) => ifp.map((fpd) => fpd.fullPath))
+          );
+          console.log(results, "results");
+          const flattened_results = results.reduce(
+            (p, c) => [
+              ...p,
+              ...c.map((cd, cdi) => ({
+                ...cd,
+                depth: cdi,
+                relativePath: cd.fileRelativePath,
+                fullPath: path.join(ROOT_PATH, cd.fileRelativePath),
+              })),
+            ],
+            []
+          );
+          pickFiles2Open(
+            flattened_results.map((r: any) => ({
+              label: `${new Array(r.depth).fill("    ").join("")}➡️ ${r.path}`,
+              target: r.fullPath,
+            }))
+          );
+        } catch (e) {
+          console.log(e, "");
+        }
+      })
+    );
+
+    this.refresh();
   }
 
-  async refresh() {
+  async refresh(showErrorMessage?: boolean): Promise<boolean> {
     if (this.loading) {
-      return;
+      return false;
+    }
+    const config = await loadConifg<ExtensionConfig>(
+      CONFIG_PATH,
+      showErrorMessage
+    );
+    if (!config) {
+      return false;
     }
     this.loading = true;
     this.importVisitedSet.clear();
@@ -166,7 +220,6 @@ export default class ImportManageCommand {
         cancellable: false,
       },
       async (progress, token) => {
-        const config = await loadConifg<ExtensionConfig>(CONFIG_PATH);
         if (config) {
           for await (let entry of config.imports_entires) {
             await this.recursivParseImports(path.join(ROOT_PATH, entry.path));

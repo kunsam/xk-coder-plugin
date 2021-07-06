@@ -55,26 +55,4 @@ export class ImportManager<T> {
     this._calPrevFileListCache.set(file_abs_path, ret);
     return ret;
   }
-
-  public test() {
-    const graph = new Graph();
-    graph.setNode("1", "1");
-    graph.setNode("2", "2");
-    graph.setNode("3", "3");
-    graph.setNode("4", "4");
-    graph.setNode("5", "5");
-    graph.setNode("6", "6");
-
-    graph.setEdge("1", "2");
-    graph.setEdge("2", "3");
-    graph.setEdge("2", "4");
-    graph.setEdge("2", "5");
-    graph.setEdge("3", "4");
-    graph.setEdge("4", "5");
-    graph.setEdge("5", "6");
-    // console.log(graph.predecessors("4"), "predecessors\n");
-    // console.log(graph.successors("4"), "successors\n");
-    // console.log(graph.parent("4"), "parent\n");
-    // console.log(graph.neighbors("4"), "neighbors\n");
-  }
 }

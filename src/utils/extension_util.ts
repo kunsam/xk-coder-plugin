@@ -162,18 +162,25 @@ export function vscodeInsertText(
     });
 }
 
-export function loadConifg<T>(config_path: string): Promise<T> {
+export function loadConifg<T>(
+  config_path: string,
+  showErrorMessage?: boolean
+): Promise<T> {
   return new Promise((res) => {
     try {
       if (fs.existsSync(config_path)) {
         res(__non_webpack_require__(config_path));
       } else {
         res(undefined);
-        vscode.window.showErrorMessage(`不存在路径 ${config_path}`);
+        if (showErrorMessage) {
+          vscode.window.showErrorMessage(`不存在路径 ${config_path}`);
+        }
       }
     } catch (e) {
       res(undefined);
-      vscode.window.showErrorMessage("加载配置文件错误❎");
+      if (showErrorMessage) {
+        vscode.window.showErrorMessage("加载配置文件错误❎");
+      }
     }
   });
 }
