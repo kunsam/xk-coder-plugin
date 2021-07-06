@@ -1,0 +1,165 @@
+{
+  "version": "0.0.0",
+  "publisher": "kunsam666",
+  "icon": "media/logo.png",
+  "main": "./dist/extension.js",
+  "name": "xkool-coder-plugin",
+  "description": "xkool code vscode plugin",
+  "repository": "",
+  "engines": {
+    "vscode": "^1.56.0"
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "test-compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "publish": "vsce publish minor",
+    "webpack": "webpack --mode development",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack-dev": "webpack --mode development --watch",
+    "add-vscode-type-on-master": "npx vscode-dts master"
+  },
+  "devDependencies": {
+    "@open-wc/webpack-import-meta-loader": "^0.4.7",
+    "@types/graphlib": "^2.1.7",
+    "@types/lodash": "^4.14.170",
+    "@types/node": "^10.12.21",
+    "@types/webpack": "^4.39.4",
+    "ts-loader": "^6.2.0",
+    "webpack": "^5.41.1",
+    "webpack-cli": "^4.7.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "find-imports": "^1.1.0",
+    "graphlib": "^2.1.8",
+    "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
+    "huffman-ts": "^0.1.3",
+    "line-reader": "^0.4.0",
+    "lodash": "^4.17.15",
+    "lzutf8": "^0.6.0",
+    "lzwcompress": "^1.1.0",
+    "parse-imports": "^1.1.0",
+    "parse-static-imports": "^1.1.0",
+    "set-cookie-parser": "^2.4.8",
+    "shrink-string": "^3.0.9",
+    "typescript": "^4.3.4"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "javascript",
+        "path": "./snippets.json"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "XkCoderPlugin-explorer",
+          "title": "XkCoderPlugin代码树",
+          "icon": "media/matrix.svg"
+        }
+      ]
+    },
+    "views": {
+      "XkCoderPlugin-explorer": [
+        {
+          "id": "XkCoderPlugin",
+          "name": "XkCoderPlugin Code Tree"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "XkCoderPlugin.openSearchEgnine",
+        "title": "打开搜索器",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getImportGraphDumpJson",
+        "title": "获取依赖图json数据",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getImportFileList",
+        "title": "查询当前文件依赖路径",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getRoutePaths",
+        "title": "查询当前文件路由路径",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getDataFlowPaths",
+        "title": "查询数据流路径",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getEventPaths",
+        "title": "查询事件流路径",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.refreshCodeTree",
+        "title": "刷新代码树",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.editCodeTreeNode",
+        "title": "编辑代码树节点",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getCodeTreeNode",
+        "title": "Get XkCoder Tree Node Data",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.getFunctionUnitTestCode",
+        "title": "Get XkCoder Function UnitTest Code",
+        "category": "XkCoderPlugin"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "XkCoderPlugin.openSearchEgnine",
+        "mac": "cmd+l cmd+l",
+        "key": "ctrl+l ctrl+l",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "commandPalette": [],
+      "view/title": [
+        {
+          "command": "XkCoderPlugin.refreshCodeTree",
+          "when": "view == XkCoderPlugin",
+          "group": "XkCoderPlugin@1"
+        },
+        {
+          "command": "XkCoderPlugin.editCodeTreeNode",
+          "when": "view == XkCoderPlugin"
+        }
+      ],
+      "view/item/context": [],
+      "editor/context": [
+        {
+          "when": "editorTextFocus",
+          "command": "XkCoderPlugin.getCodeTreeNode",
+          "group": "XkCoderPlugin@1"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "XkCoderPlugin.getFunctionUnitTestCode",
+          "group": "XkCoderPlugin@2"
+        }
+      ]
+    }
+  }
+}
