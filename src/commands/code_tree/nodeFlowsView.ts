@@ -3,13 +3,13 @@ import * as path from "path";
 import * as vscode from "vscode";
 import NodeFlowsUtil from "./nodeFlowsUtil";
 import { XkCoderTreeNode, KC_NODE_ICON_TYPE } from "./typing";
-import { ROOT_PATH, PROJECT_DIR } from "../../config";
+import { ROOT_PATH, PROJECT_WORKFLOWS_DIR } from "../../config";
 import { unpack } from "lzwcompress";
 
 const CONFIG_FILE_ABS_PATH = path.join(
   ROOT_PATH,
-  PROJECT_DIR,
-  "/workflows/index.js"
+  PROJECT_WORKFLOWS_DIR,
+  "/index.js"
 );
 
 function _getSymbols(
@@ -166,8 +166,8 @@ export class NodeFlowsView {
           children: [
             {
               text: `按文档格式添加:${path.join(
-                PROJECT_DIR,
-                "workflows/index.js"
+                PROJECT_WORKFLOWS_DIR,
+                "index.js"
               )}`,
             },
           ],
@@ -196,7 +196,6 @@ export class NodeFlowsView {
             lzwcompress: undefined,
           };
         }
-        console.log(data, "data onDidChangeSelection");
         if (data.children && data.children.length) return;
         if (data.location) {
           this._showlocatedDoc(data.location);
@@ -332,8 +331,7 @@ export class KReactCodeTree
       // __kReactCodeTree__/workflows
       const truePath = path.join(
         ROOT_PATH,
-        PROJECT_DIR,
-        "/workflows",
+        PROJECT_WORKFLOWS_DIR,
         element.requirePath
       );
       try {

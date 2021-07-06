@@ -34,7 +34,8 @@ export default class NodeFlowCommands {
             vscode.env.clipboard.writeText(
               JSON.stringify(
                 { text: "节点描述", lzwcompress: pack(text).join("-") },
-                null
+                null,
+                2
               )
             );
             vscode.window.showInformationMessage(
@@ -76,5 +77,26 @@ export default class NodeFlowCommands {
         }
       )
     );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        "XkCoderPlugin.openCodeNodeDocumentInBroswer",
+        this.openCodeNodeDocumentInBroswer.bind(this)
+      )
+    );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        "XkCoderPlugin.openCodeNodeGitlabInBroswer",
+        this.openCodeNodeGitlabInBroswer.bind(this)
+      )
+    );
   }
+  openCodeNodeDocumentInBroswer(selectedNode: XkCoderTreeNode) {
+    if (selectedNode && selectedNode.document) {
+      vscode.env.openExternal(vscode.Uri.parse(selectedNode.document));
+    }
+  }
+
+  openCodeNodeGitlabInBroswer() {}
 }

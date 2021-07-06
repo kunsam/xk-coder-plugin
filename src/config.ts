@@ -3,6 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 
 export const PROJECT_DIR = "/.xkool";
+export const PROJECT_WORKFLOWS_DIR = "/.xkool_workflows";
 
 export const ROOT_PATH: string =
   vscode.workspace.workspaceFolders[0] &&

@@ -45,7 +45,7 @@ export type XkCoderTreeNode = {
   parent?: XkCoderTreeNode;
 
   iconType?: KC_NODE_ICON_TYPE;
-  requirePath?: string; // 如果存在，这个是相对路径(.xkool/workflows/index.js) 使用 requirePath 加载children
+  requirePath?: string; // 如果存在，这个是相对路径(.xkool_workflows/index.js) 使用 requirePath 加载children
   _id?: string; // 自动化生成后反向查找
 
   lzwcompress?: string;
@@ -55,3 +55,11 @@ export type SceneWorkflows = {
   title: string;
   list: XkCoderTreeNode[];
 };
+
+// export interface CommonUIViewNode {
+//   id: string;
+//   text: string;
+//   parent?: CommonUIViewNode;
+//   _origin: XkCoderTreeNode;
+//   children: CommonUIViewNode[];
+// }
