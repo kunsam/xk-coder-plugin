@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "kunsam666",
   "icon": "media/logo.png",
   "main": "./dist/extension.js",
