@@ -56,4 +56,20 @@ export async function activate(context: vscode.ExtensionContext) {
       });
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("XkCoderPlugin.openUiCoderServer", () => {
+      vscode.window.showInputBox().then((result) => {
+        vscode.window.showInformationMessage("正在施工中...");
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("XkCoderPlugin.closeUiCoderServer", () => {
+      vscode.window.showInputBox().then((result) => {
+        vscode.window.showInformationMessage("正在施工中...");
+      });
+    })
+  );
 }

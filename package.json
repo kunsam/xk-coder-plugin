@@ -128,6 +128,16 @@
         "command": "XkCoderPlugin.openCodeNodeGitlabInBroswer",
         "title": "打开gitlab提交",
         "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.openUiCoderServer",
+        "title": "打开UI编码服务器",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.closeUiCoderServer",
+        "title": "关闭UI编码服务器",
+        "category": "XkCoderPlugin"
       }
     ],
     "keybindings": [
@@ -150,6 +160,16 @@
           "command": "XkCoderPlugin.refreshCodeTree",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@2"
+        },
+        {
+          "command": "XkCoderPlugin.openUiCoderServer",
+          "when": "view == XkCoderPlugin",
+          "group": "XkCoderPlugin@3"
+        },
+        {
+          "command": "XkCoderPlugin.closeUiCoderServer",
+          "when": "view == XkCoderPlugin",
+          "group": "XkCoderPlugin@4"
         }
       ],
       "view/item/context": [

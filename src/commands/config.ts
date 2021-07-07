@@ -16,12 +16,12 @@ export const SearchableCommands: SearchableCommand[] = [
     tags: [],
   },
   {
-    id: "XkCoderPlugin.getRoutePaths",
+    id: "XkCoderPlugin.getDataFlowPaths",
     name: "〰️  查询数据流路径",
     tags: [],
   },
   {
-    id: "XkCoderPlugin.getRoutePaths",
+    id: "XkCoderPlugin.getEventPaths",
     name: "🪄  查询事件流路径",
     tags: [],
   },
