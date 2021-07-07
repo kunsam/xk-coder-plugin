@@ -17,6 +17,16 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("XkCoderPlugin.openWikiGuide", () => {
+      vscode.env.openExternal(
+        vscode.Uri.parse(
+          "https://www.notion.so/kunsam624/xkool-e63205c83ff64a44ae1bdad001a2c080"
+        )
+      );
+    })
+  );
+
   const fpx = new FuncParserX();
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -33,13 +43,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("XkCoderPlugin.getDataFlowPaths", () => {
-      vscode.window.showInformationMessage("正在施工中...");
+      vscode.window.showInputBox().then((result) => {
+        vscode.window.showInformationMessage("正在施工中...");
+      });
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand("XkCoderPlugin.getEventPaths", () => {
-      vscode.window.showInformationMessage("正在施工中...");
+      vscode.window.showInputBox().then((result) => {
+        vscode.window.showInformationMessage("正在施工中...");
+      });
     })
   );
 }

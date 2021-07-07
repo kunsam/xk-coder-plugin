@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { XkCoderTreeNode } from "./typing";
 import NodeFlowsUtil from "./nodeFlowsUtil";
 import { NodeFlowsView } from "./nodeFlowsView";
-// import { compress } from "lzutf8";
 import { pack } from "lzwcompress";
 
 export default class NodeFlowCommands {
@@ -98,5 +97,7 @@ export default class NodeFlowCommands {
     }
   }
 
-  openCodeNodeGitlabInBroswer() {}
+  openCodeNodeGitlabInBroswer() {
+    vscode.window.showInformationMessage("正在施工中...");
+  }
 }

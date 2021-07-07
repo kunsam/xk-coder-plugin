@@ -126,7 +126,7 @@
       },
       {
         "command": "XkCoderPlugin.openCodeNodeGitlabInBroswer",
-        "title": "打开gitlab链接",
+        "title": "打开gitlab提交",
         "category": "XkCoderPlugin"
       }
     ],
@@ -149,11 +149,7 @@
         {
           "command": "XkCoderPlugin.refreshCodeTree",
           "when": "view == XkCoderPlugin",
-          "group": "XkCoderPlugin@1"
-        },
-        {
-          "command": "XkCoderPlugin.editCodeTreeNode",
-          "when": "view == XkCoderPlugin"
+          "group": "XkCoderPlugin@2"
         }
       ],
       "view/item/context": [
@@ -166,6 +162,11 @@
           "command": "XkCoderPlugin.openCodeNodeGitlabInBroswer",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@2"
+        },
+        {
+          "command": "XkCoderPlugin.editCodeTreeNode",
+          "when": "view == XkCoderPlugin",
+          "group": "XkCoderPlugin@3"
         }
       ],
       "editor/context": [

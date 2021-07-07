@@ -134,7 +134,11 @@ export default class ImportManageCommand {
           vscode.window.showInformationMessage("不存在打开的文档");
           return;
         }
+        console.log("查询依赖路径：");
+        console.log(this.importGraph.nodes());
+        console.log("\n");
         const results = this.impManager.calPrevFileList(uri.fsPath);
+        console.log(results, "查询依赖路径： results");
         const flattened_results = results.reduce(
           (p, c) => [...p, ...c.map((cd, cdi) => ({ ...cd, depth: cdi }))],
           []
@@ -166,12 +170,12 @@ export default class ImportManageCommand {
             uri.fsPath,
             true
           );
-          console.log(importFilePaths, this.impManager, "importFilePaths");
+          console.log("getRoutePaths 查询依赖路径:", importFilePaths);
           const results = AppRouterManager.queryFileRoutePaths(
             uri.fsPath,
             importFilePaths.map((ifp) => ifp.map((fpd) => fpd.fullPath))
           );
-          console.log(results, "results");
+          console.log("getRoutePaths 查询结果:", results);
           const flattened_results = results.reduce(
             (p, c) => [
               ...p,
