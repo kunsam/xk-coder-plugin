@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import NodeFlowsUtil from "./nodeFlowsUtil";
 import { XkCoderTreeNode, KC_NODE_ICON_TYPE } from "./typing";
 import { ROOT_PATH, PROJECT_WORKFLOWS_DIR } from "../../config";
-import { unpack } from "lzwcompress";
+import { decode } from "js-base64";
 
 const CONFIG_FILE_ABS_PATH = path.join(
   ROOT_PATH,
@@ -189,7 +189,7 @@ export class NodeFlowsView {
     this._view.onDidChangeSelection((e) => {
       e.selection.forEach((data) => {
         if (data.lzwcompress) {
-          const unpackData = JSON.parse(unpack(data.lzwcompress.split("-")));
+          const unpackData = JSON.parse(decode(data.lzwcompress));
           data = {
             ...data,
             ...unpackData,

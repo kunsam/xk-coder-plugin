@@ -30,9 +30,9 @@
   },
   "dependencies": {
     "graphlib": "^2.1.8",
+    "js-base64": "^3.6.1",
     "line-reader": "^0.4.0",
     "lodash": "^4.17.15",
-    "lzwcompress": "^1.1.0",
     "parse-static-imports": "^1.1.0",
     "typescript": "^4.3.4"
   },

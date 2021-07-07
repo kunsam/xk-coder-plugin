@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { XkCoderTreeNode } from "./typing";
 import NodeFlowsUtil from "./nodeFlowsUtil";
 import { NodeFlowsView } from "./nodeFlowsView";
-import { pack } from "lzwcompress";
+import { encode } from "js-base64";
 
 export default class NodeFlowCommands {
   constructor(context: vscode.ExtensionContext) {
@@ -32,7 +32,7 @@ export default class NodeFlowCommands {
             });
             vscode.env.clipboard.writeText(
               JSON.stringify(
-                { text: "节点描述", lzwcompress: pack(text).join("-") },
+                { text: "节点描述", lzwcompress: encode(text) },
                 null,
                 2
               )
