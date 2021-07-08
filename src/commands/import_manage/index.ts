@@ -23,6 +23,9 @@ export default class ImportManageCommand {
     if (!fs.existsSync(file_abs_path)) {
       return;
     }
+    if (!path.extname(file_abs_path)) {
+      return;
+    }
     const fileStr = fs.readFileSync(file_abs_path).toString();
     if (!fileStr) {
       return;
@@ -200,10 +203,13 @@ export default class ImportManageCommand {
       })
     );
 
-    this.refresh();
+    this.refresh().catch((e) => {
+      console.log(e, "config");
+    });
   }
 
   async refresh(showErrorMessage?: boolean): Promise<boolean> {
+    console.log(this.loading, "refresh this.importGraph");
     if (this.loading) {
       return false;
     }
@@ -211,34 +217,25 @@ export default class ImportManageCommand {
       CONFIG_PATH,
       showErrorMessage
     );
+    console.log(config, "refresh this.importGraph config");
     if (!config) {
       return false;
     }
     this.loading = true;
     this.importVisitedSet.clear();
     this.importGraph = new Graph();
-    await vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: "更新计算中...",
-        cancellable: false,
-      },
-      async (progress, token) => {
-        if (config) {
-          for await (let entry of config.imports_entires) {
-            await this.recursivParseImports(path.join(ROOT_PATH, entry.path));
-          }
-          for await (let lazy_file of LAZY_IMPORT_FILES) {
-            const file_abs_path = path.join(ROOT_PATH, lazy_file.rpath);
-            await this.recursivParseImports(file_abs_path);
-            this.importGraph.setEdge(
-              file_abs_path,
-              path.join(ROOT_PATH, lazy_file.from)
-            );
-          }
-        }
-      }
-    );
+
+    for await (let entry of config.imports_entires) {
+      await this.recursivParseImports(path.join(ROOT_PATH, entry.path));
+    }
+    for await (let lazy_file of LAZY_IMPORT_FILES) {
+      const file_abs_path = path.join(ROOT_PATH, lazy_file.rpath);
+      await this.recursivParseImports(file_abs_path);
+      this.importGraph.setEdge(
+        file_abs_path,
+        path.join(ROOT_PATH, lazy_file.from)
+      );
+    }
     this.impManager = new ImportManager<CoderNamespace.ImportNode>(
       this.importGraph
     );
