@@ -209,7 +209,6 @@ export default class ImportManageCommand {
   }
 
   async refresh(showErrorMessage?: boolean): Promise<boolean> {
-    console.log(this.loading, "refresh this.importGraph");
     if (this.loading) {
       return false;
     }
@@ -217,7 +216,6 @@ export default class ImportManageCommand {
       CONFIG_PATH,
       showErrorMessage
     );
-    console.log(config, "refresh this.importGraph config");
     if (!config) {
       return false;
     }

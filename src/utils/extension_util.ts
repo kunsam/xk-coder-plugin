@@ -170,6 +170,9 @@ export function loadConifg<T>(
     try {
       if (fs.existsSync(config_path)) {
         res(__non_webpack_require__(config_path));
+        delete __non_webpack_require__.cache[
+          __non_webpack_require__.resolve(config_path)
+        ];
       } else {
         res(undefined);
         if (showErrorMessage) {
