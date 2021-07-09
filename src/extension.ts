@@ -5,6 +5,7 @@ import { showAndExcuteCommands } from "./commands/utils";
 import NodeFlowCommands from "./commands/code_tree";
 import { FuncParserX } from "./base/function_parser";
 import ImportManageCommand from "./commands/import_manage";
+import { ImportSorter } from "./commands/import_sorter";
 
 export async function activate(context: vscode.ExtensionContext) {
   const impManage = new ImportManageCommand();
@@ -39,6 +40,12 @@ export async function activate(context: vscode.ExtensionContext) {
         );
       }
     )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("XkCoderPlugin.sortFrontEndImports", () => {
+      ImportSorter.sortWithTsEslint();
+    })
   );
 
   context.subscriptions.push(

@@ -33,6 +33,7 @@
     "js-base64": "^3.6.1",
     "line-reader": "^0.4.0",
     "lodash": "^4.17.15",
+    "parse-imports": "^1.1.0",
     "parse-static-imports": "^1.1.0",
     "typescript": "^4.3.4"
   },
@@ -130,6 +131,11 @@
         "category": "XkCoderPlugin"
       },
       {
+        "command": "XkCoderPlugin.sortFrontEndImports",
+        "title": "前端项目imports自动排序",
+        "category": "XkCoderPlugin"
+      },
+      {
         "command": "XkCoderPlugin.openUiCoderServer",
         "title": "打开UI编码服务器",
         "category": "XkCoderPlugin"
@@ -145,6 +151,12 @@
         "command": "XkCoderPlugin.openSearchEgnine",
         "mac": "cmd+l cmd+l",
         "key": "ctrl+l ctrl+l",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "XkCoderPlugin.sortFrontEndImports",
+        "mac": "cmd+l cmd+9",
+        "key": "ctrl+l ctrl+9",
         "when": "editorTextFocus"
       }
     ],
