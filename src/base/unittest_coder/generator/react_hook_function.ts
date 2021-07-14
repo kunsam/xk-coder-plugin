@@ -9,6 +9,7 @@ class FunctionUnitTestGenerator {
     sources: UnitCoderNamespace.UnitTestSource[]
   ) {
     let str = "";
+    str += "import { act, renderHook } from '@testing-library/react-hooks';\n";
     const findDefault = sources.find((s) => s.isExportDefault);
     str += "import ";
     let hasNamedLength = sources.length;
@@ -65,28 +66,41 @@ class FunctionUnitTestGenerator {
         obj[parsed.name] = parsed.type;
       });
       str += `\tconst testProps: any = ${JSON.stringify(obj)};\n`;
-      str += `\tconst hooks = ${functionName}(testProps);\n`;
 
       const states = statesMap.get(functionName) || [];
       const stateExpectStr = this.getExpectStateCode(
         states,
-        "hooks.state",
+        "result.state",
         "\t\t"
       );
-      const handlersStr: { name: string; str: string }[] = [
-        { name: "init", str: "\n" },
+      const handlersStr: { name: string; str: string; desc: string }[] = [
+        {
+          name: "init",
+          str: "\n",
+          desc: "// test different props copy this test",
+        },
       ];
       const handlers = handlersMap.get(functionName) || [];
       handlers.forEach((handler) => {
         // str += 'next version i can fill this change_me'
+        let subStr = "";
+        subStr += "\t\tact(() => {\n";
+        subStr += `\t\t\thooks.result.current.handler.${handler}('change_me');\n`;
+        subStr += "\t\t});\n";
         handlersStr.push({
           name: handler,
-          str: `\t\thooks.handler.${handler}('change_me');\n`,
+          desc: "",
+          str: subStr,
         });
       });
       handlersStr.forEach((handlerStr) => {
-        str += `\tit('${functionName} ${handlerStr.name} test should be correct', () => {\n`;
+        if (handlerStr.desc) {
+          str += `\t${handlerStr.desc}\n`;
+        }
+        str += `\ttest('${functionName} ${handlerStr.name} test should be correct', () => {\n`;
+        str += `\t\tconst hooks = renderHook(() => ${functionName}(testProps));\n`;
         str += handlerStr.str;
+        str += "\t\tconst result = hooks.result.current;";
         str += stateExpectStr;
         str += "\t});\n";
       });
@@ -94,6 +108,19 @@ class FunctionUnitTestGenerator {
     });
     return str;
   }
+
+  public getDocCode() {
+    let str = "/*\n";
+    str += "\t当前无法测试复杂异步hook:\n";
+    str +=
+      "\thttps://github.com/testing-library/react-hooks-testing-library/issues/173\n";
+    str += "\t简单异步测试请参考:\n";
+    str +=
+      "\thttps://react-hooks-testing-library.com/usage/advanced-hooks#async\n";
+    str += "*/\n";
+    return str;
+  }
+
   public getTestCode(
     fileName: string,
     sources: UnitCoderNamespace.UnitTestSource[],
@@ -102,6 +129,8 @@ class FunctionUnitTestGenerator {
   ) {
     let str = "";
     str += this.getImportsCode(fileName, sources);
+    str += "\n\n";
+    str += this.getDocCode();
     str += "\n\n";
     str += this.getDescireCode(sources, statesMap, handlersMap);
     return str;

@@ -1,13 +1,13 @@
-import React from 'react';
+// import React from 'react';
 
-interface Props {
-  a: number;
-  b: {
-    a: string;
-    c?: string;
-  };
-  d: () => void;
-}
+// interface Props {
+//   a: number;
+//   b: {
+//     a: string;
+//     c?: string;
+//   };
+//   d: () => void;
+// }
 
 // export const TestComponet = ({}: { a: number; b: { b1: string; b2: string[] } }) => {
 //   return null;
@@ -32,9 +32,9 @@ interface Props {
 //   return null;
 // };
 
-export const TestComponet5 = ({}: Props) => {
-  return null;
-};
+// export const TestComponet5 = ({}: Props) => {
+//   return null;
+// };
 
 // export const TestComponet6 = ({}: Props) => {
 //   return null;

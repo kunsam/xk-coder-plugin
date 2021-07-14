@@ -1,5 +1,3 @@
-import { Line2, LineSegmentsGeometry } from '@/xkplan/utils/threeUtils/__mocks__/threeUtil';
-
 // export function testFunction1(a: number, b: string[], c?: boolean) {}
 
 interface Args {
@@ -25,26 +23,26 @@ interface Args {
 // export const testFunction4 = (b?: number) => {};
 // export const testFunction5 = (a: LineSegmentsGeometry, b: Line2) => {};
 
-export const memoize = (fn: (...args: any[]) => any) => {
-  const cache = {};
-  return (...args: any[]) => {
-    const argStr = JSON.stringify(args);
-    cache[argStr] = cache[argStr] || fn(...args);
-    return cache[argStr];
-  };
-};
+// export const memoize = (fn: (...args: any[]) => any) => {
+//   const cache = {};
+//   return (...args: any[]) => {
+//     const argStr = JSON.stringify(args);
+//     cache[argStr] = cache[argStr] || fn(...args);
+//     return cache[argStr];
+//   };
+// };
 
-export const loadVisualizeJS = memoize((url: string) => {});
+// export const loadVisualizeJS = memoize((url: string) => {});
 
-export function worldToScreen(point: [number, number, number], moduleInst: any, viewer: any) {
-  const tvPoint = moduleInst.Point3d.createFromArray(point);
-  const mtx = viewer.activeView.worldToDeviceMatrix;
+// export function worldToScreen(point: [number, number, number], moduleInst: any, viewer: any) {
+//   const tvPoint = moduleInst.Point3d.createFromArray(point);
+//   const mtx = viewer.activeView.worldToDeviceMatrix;
 
-  tvPoint.transformBy(mtx);
+//   tvPoint.transformBy(mtx);
 
-  const x = tvPoint.x / window.devicePixelRatio;
-  const y = tvPoint.y / window.devicePixelRatio;
+//   const x = tvPoint.x / window.devicePixelRatio;
+//   const y = tvPoint.y / window.devicePixelRatio;
 
-  tvPoint.delete();
-  return [x, y] as [number, number];
-}
+//   tvPoint.delete();
+//   return [x, y] as [number, number];
+// }

@@ -64,6 +64,14 @@ class FunctionUnitTestGenerator {
         obj[parsed.name] = parsed.type;
       });
       str += `\tconst testProps: any = ${JSON.stringify(obj)};\n`;
+
+      // normal test
+      str += `\ttest('${functionName} render test should be correct', () => {\n`;
+      str += `\t\tconst component = renderer.create(<${functionName} {...testProps} />);\n`;
+      str += `\t\tconst tree = component.toJSON();\n`;
+      str += `\t\texpect(tree).toMatchSnapshot();\n`;
+      str += `\t});\n`;
+
       parameters.forEach((pa) => {
         const parsed = JSON.parse(pa);
         str += `\ttest('${functionName} props ${parsed.name} test should be correct', () => {\n`;
@@ -74,13 +82,7 @@ class FunctionUnitTestGenerator {
         str += `\t\texpect(tree).toMatchSnapshot();\n`;
         str += `\t});\n`;
       });
-      if (parameters.length === 0) {
-        str += `\ttest('${functionName} render test should be correct', () => {\n`;
-        str += `\t\tconst component = renderer.create(<${functionName} {...testProps} />);\n`;
-        str += `\t\tconst tree = component.toJSON();\n`;
-        str += `\t\texpect(tree).toMatchSnapshot();\n`;
-        str += `\t});\n`;
-      }
+
       str += `});\n\n`;
     });
     return str;
@@ -191,6 +193,6 @@ class FunctionUnitTestGenerator {
 const finst = new FunctionUnitTestGenerator();
 
 UnitTestGenerator.register(
-  UnitCoderNamespace.TestTargetType.react_class_comp,
+  UnitCoderNamespace.TestTargetType.react_function_comp,
   finst.dealGenerator.bind(finst)
 );
