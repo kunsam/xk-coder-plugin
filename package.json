@@ -20,6 +20,7 @@
     "add-vscode-type-on-master": "npx vscode-dts master"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.12",
     "@types/graphlib": "^2.1.7",
     "@types/lodash": "^4.14.170",
     "@types/node": "^10.12.21",
@@ -29,6 +30,7 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
+    "fs-extra": "^10.0.0",
     "graphlib": "^2.1.8",
     "js-base64": "^3.6.1",
     "line-reader": "^0.4.0",

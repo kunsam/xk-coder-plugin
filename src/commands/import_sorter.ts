@@ -98,7 +98,6 @@ export class ImportSorter {
     let ts_root_relative_imports: Import[] = [];
     let relative_imports: Import[] = [];
     let other_imports: Import[] = [];
-    console.log(imports, "imports");
     imports.forEach((imp) => {
       switch (imp.moduleSpecifier.type) {
         case "package": {
@@ -140,7 +139,6 @@ export class ImportSorter {
       getImportsString(other_imports).join("\n"),
     ];
 
-    console.log(lines, "lines");
     return editor.edit((editBuilder) => {
       const range = new vscode.Range(
         startLine,
@@ -151,38 +149,4 @@ export class ImportSorter {
       editBuilder.replace(range, lines.join(`\n\n`));
     });
   }
-  //   public static async sortWithTsEslint() {
-  //     const transformer: ArrayTransformer = async (lines: string[]) => {
-  //       const filterNoImportLines = lines.filter((line) => /^import/.test(line));
-
-  //       let sortedLines = [...filterNoImportLines];
-  //       let node_modules_imports = [];
-  //       let ts_root_relative_imports = [];
-  //       let relative_imports = [];
-
-  //       for await (let line of filterNoImportLines) {
-  //         const imports = [...(await parseImports(line))];
-  //         const importData = imports[0];
-  //         if (importData) {
-  //           switch (importData.moduleSpecifier.type) {
-  //             case "builtin":
-  //             case "package": {
-  //               node_modules_imports.push(line);
-  //               break;
-  //             }
-  //             case "relative": {
-  //               break;
-  //             }
-  //             case "absolute":
-  //             case "relative": {
-  //               break;
-  //             }
-  //           }
-  //         }
-  //       }
-  //       return lines;
-  //     };
-
-  //     return await this.sort([transformer]);
-  //   }
 }

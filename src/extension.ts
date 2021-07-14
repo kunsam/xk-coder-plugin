@@ -6,6 +6,8 @@ import NodeFlowCommands from "./commands/code_tree";
 import { FuncParserX } from "./base/function_parser";
 import ImportManageCommand from "./commands/import_manage";
 import { ImportSorter } from "./commands/import_sorter";
+import { generateTestFileCommand } from "./base/unittest_coder/interactor";
+import "./base/unittest_coder/generator";
 
 export async function activate(context: vscode.ExtensionContext) {
   const impManage = new ImportManageCommand();
@@ -32,12 +34,20 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "XkCoderPlugin.getFunctionUnitTestCode",
-      (forCompletion: boolean) => {
-        fpx.writeUnitTestThis(
-          vscode.window.activeTextEditor,
-          "getFunctionUnitTestCode",
-          forCompletion
-        );
+      () => {
+        const uri = vscode.window.activeTextEditor.document.uri;
+        if (!uri) {
+          vscode.window.showInformationMessage("不存在打开的文档");
+          return;
+        }
+
+        generateTestFileCommand(uri.fsPath);
+
+        // fpx.writeUnitTestThis(
+        //   vscode.window.activeTextEditor,
+        //   "getFunctionUnitTestCode",
+        //   forCompletion
+        // );
       }
     )
   );
