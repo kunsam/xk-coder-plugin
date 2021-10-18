@@ -8,12 +8,14 @@ import ImportManageCommand from "./commands/import_manage";
 import { ImportSorter } from "./commands/import_sorter";
 import { generateTestFileCommand } from "./base/unittest_coder/interactor";
 import "./base/unittest_coder/generator";
+import SharedCodeFeature from "./commands/shared_code";
 
 export async function activate(context: vscode.ExtensionContext) {
   const impManage = new ImportManageCommand();
   impManage.init(context);
 
   new NodeFlowCommands(context);
+  new SharedCodeFeature();
   context.subscriptions.push(
     vscode.commands.registerCommand("XkCoderPlugin.openSearchEgnine", () => {
       showAndExcuteCommands(SearchableCommands);

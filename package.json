@@ -73,6 +73,26 @@
         "category": "XkCoderPlugin"
       },
       {
+        "command": "XkCoderPlugin.generateSharedCodeData",
+        "title": "生成共享代码数据",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.refreshSharedCode",
+        "title": "刷新共享代码",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.openSelectSearchSharedCode",
+        "title": "打开共享代码选择搜索框",
+        "category": "XkCoderPlugin"
+      },
+      {
+        "command": "XkCoderPlugin.openInputSearchSharedCode",
+        "title": "打开共享代码快速搜索框",
+        "category": "XkCoderPlugin"
+      },
+      {
         "command": "XkCoderPlugin.openSearchEgnine",
         "title": "打开搜索器",
         "category": "XkCoderPlugin"
@@ -150,6 +170,18 @@
     ],
     "keybindings": [
       {
+        "command": "XkCoderPlugin.openSelectSearchSharedCode",
+        "mac": "cmd+l cmd+k",
+        "key": "ctrl+l ctrl+k",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "XkCoderPlugin.openInputSearchSharedCode",
+        "mac": "cmd+l cmd+j",
+        "key": "ctrl+l ctrl+j",
+        "when": "editorTextFocus"
+      },
+      {
         "command": "XkCoderPlugin.openSearchEgnine",
         "mac": "cmd+l cmd+l",
         "key": "ctrl+l ctrl+l",
@@ -176,14 +208,19 @@
           "group": "XkCoderPlugin@2"
         },
         {
-          "command": "XkCoderPlugin.openUiCoderServer",
+          "command": "XkCoderPlugin.refreshSharedCode",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@3"
         },
         {
-          "command": "XkCoderPlugin.closeUiCoderServer",
+          "command": "XkCoderPlugin.openUiCoderServer",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@4"
+        },
+        {
+          "command": "XkCoderPlugin.closeUiCoderServer",
+          "when": "view == XkCoderPlugin",
+          "group": "XkCoderPlugin@5"
         }
       ],
       "view/item/context": [
@@ -211,8 +248,13 @@
         },
         {
           "when": "editorTextFocus",
-          "command": "XkCoderPlugin.getFunctionUnitTestCode",
+          "command": "XkCoderPlugin.generateSharedCodeData",
           "group": "XkCoderPlugin@2"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "XkCoderPlugin.getFunctionUnitTestCode",
+          "group": "XkCoderPlugin@3"
         }
       ]
     }

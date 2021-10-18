@@ -53,6 +53,7 @@ class FunctionUnitTestGenerator {
     return str;
   }
 
+  // TODO 需要做行为交互测试，捕获Input onClick等
   public getDescireCode(sources: UnitCoderNamespace.UnitTestSource[]) {
     let str = "";
     sources.forEach(({ functionName, parameters }) => {

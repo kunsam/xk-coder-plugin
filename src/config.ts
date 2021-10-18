@@ -5,6 +5,8 @@ import * as fs from "fs";
 export const PROJECT_DIR = "/.xkool";
 export const PROJECT_WORKFLOWS_DIR = "/.xkool_workflows";
 
+export const PROJECT_SHAREDCODE_DIR = "/.xkool_sharedcode";
+
 export const ROOT_PATH: string =
   vscode.workspace.workspaceFolders[0] &&
   vscode.workspace.workspaceFolders[0].uri.path;
