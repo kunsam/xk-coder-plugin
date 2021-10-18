@@ -16,6 +16,7 @@ export namespace SharedCode {
   }
 
   export interface ITreeItem {
+    name?: string;
     data?: IData;
     requirePath?: string;
     children?: ITreeItem[];

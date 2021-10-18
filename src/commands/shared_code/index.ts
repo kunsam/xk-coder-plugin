@@ -182,7 +182,7 @@ export default class SharedCodeFeature {
           .showQuickPick(
             results.map((r, ri) => ({
               id: ri,
-              label: `${r.data!.name} ${r.data.desc}`,
+              label: this._getItemLabel(r),
               data: r,
             }))
           )
@@ -193,12 +193,25 @@ export default class SharedCodeFeature {
     });
   };
 
+  private _getItemLabel = (item: SharedCode.ITreeItem) => {
+    let ret: string = "";
+    if (item.data) {
+      ret = item.data.name;
+      if (item.data.desc) {
+        ret += `  ${item.data.desc}`;
+      }
+    } else {
+      ret = item.name || item.requirePath || "暂无名称";
+    }
+    return ret;
+  };
+
   private _recurseOpenSelectSearch = (root: SharedCode.ITreeItem) => {
     if (root.children) {
       vscode.window
         .showQuickPick(
           root.children.map((item) => ({
-            label: `${item.data!.name} ${item.data.desc}`,
+            label: this._getItemLabel(item),
             data: item,
           }))
         )
