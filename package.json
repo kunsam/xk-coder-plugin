@@ -83,11 +83,6 @@
         "category": "XkCoderPlugin"
       },
       {
-        "command": "XkCoderPlugin.openSelectSearchSharedCode",
-        "title": "打开共享代码选择搜索框",
-        "category": "XkCoderPlugin"
-      },
-      {
         "command": "XkCoderPlugin.openInputSearchSharedCode",
         "title": "打开共享代码快速搜索框",
         "category": "XkCoderPlugin"
@@ -169,12 +164,6 @@
       }
     ],
     "keybindings": [
-      {
-        "command": "XkCoderPlugin.openSelectSearchSharedCode",
-        "mac": "cmd+l cmd+k",
-        "key": "ctrl+l ctrl+k",
-        "when": "editorTextFocus"
-      },
       {
         "command": "XkCoderPlugin.openInputSearchSharedCode",
         "mac": "cmd+l cmd+j",

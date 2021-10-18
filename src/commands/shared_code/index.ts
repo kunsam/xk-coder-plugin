@@ -85,13 +85,8 @@ export default class SharedCodeFeature {
     });
 
     vscode.commands.registerCommand(
-      "XkCoderPlugin.openSelectSearchSharedCode",
-      this.openSearchSharedCode
-    );
-
-    vscode.commands.registerCommand(
       "XkCoderPlugin.openInputSearchSharedCode",
-      this.openInputSearchSharedCode
+      this.openSearchSharedCode
     );
 
     vscode.commands.registerCommand(
@@ -128,8 +123,9 @@ export default class SharedCodeFeature {
   public openSearchSharedCode = () => {
     vscode.window
       .showQuickPick([
-        { id: "1", label: "1. 使用关键词快速搜索" },
+        { id: "1", label: "1. 使用标签搜索" },
         { id: "2", label: "2. 使用树形选择" },
+        { id: "3", label: "3. 使用快速字符" },
       ])
       .then((data) => {
         if (data) {
@@ -140,6 +136,10 @@ export default class SharedCodeFeature {
             }
             case "2": {
               this.openSelectSearchSharedCode();
+              break;
+            }
+            case "3": {
+              this.openInputSearchSharedCode();
               break;
             }
           }
