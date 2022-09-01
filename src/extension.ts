@@ -9,6 +9,7 @@ import { ImportSorter } from "./commands/import_sorter";
 import { generateTestFileCommand } from "./base/unittest_coder/interactor";
 import "./base/unittest_coder/generator";
 import SharedCodeFeature from "./commands/shared_code";
+import { DebuggerCommand } from "./commands/debugger";
 
 export async function activate(context: vscode.ExtensionContext) {
   const impManage = new ImportManageCommand();
@@ -16,6 +17,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   new NodeFlowCommands(context);
   new SharedCodeFeature();
+
+  new DebuggerCommand(context);
+
   context.subscriptions.push(
     vscode.commands.registerCommand("XkCoderPlugin.openSearchEgnine", () => {
       showAndExcuteCommands(SearchableCommands);
@@ -70,22 +74,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("XkCoderPlugin.getEventPaths", () => {
-      vscode.window.showInputBox().then((result) => {
-        vscode.window.showInformationMessage("正在施工中...");
-      });
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("XkCoderPlugin.openUiCoderServer", () => {
-      vscode.window.showInputBox().then((result) => {
-        vscode.window.showInformationMessage("正在施工中...");
-      });
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("XkCoderPlugin.closeUiCoderServer", () => {
       vscode.window.showInputBox().then((result) => {
         vscode.window.showInformationMessage("正在施工中...");
       });

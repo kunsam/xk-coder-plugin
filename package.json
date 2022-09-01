@@ -20,6 +20,7 @@
     "add-vscode-type-on-master": "npx vscode-dts master"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/fs-extra": "^9.0.12",
     "@types/graphlib": "^2.1.7",
     "@types/lodash": "^4.14.170",
@@ -30,6 +31,8 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "4.18.1",
     "fs-extra": "^10.0.0",
     "graphlib": "^2.1.8",
     "js-base64": "^3.6.1",
@@ -153,13 +156,13 @@
         "category": "XkCoderPlugin"
       },
       {
-        "command": "XkCoderPlugin.openUiCoderServer",
-        "title": "打开UI编码服务器",
+        "command": "XkCoderPlugin.openDebuggerServer",
+        "title": "打开调试服务器",
         "category": "XkCoderPlugin"
       },
       {
-        "command": "XkCoderPlugin.closeUiCoderServer",
-        "title": "关闭UI编码服务器",
+        "command": "XkCoderPlugin.closeDebuggerServer",
+        "title": "关闭调试服务器",
         "category": "XkCoderPlugin"
       }
     ],
@@ -202,12 +205,12 @@
           "group": "XkCoderPlugin@3"
         },
         {
-          "command": "XkCoderPlugin.openUiCoderServer",
+          "command": "XkCoderPlugin.openDebuggerServer",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@4"
         },
         {
-          "command": "XkCoderPlugin.closeUiCoderServer",
+          "command": "XkCoderPlugin.closeDebuggerServer",
           "when": "view == XkCoderPlugin",
           "group": "XkCoderPlugin@5"
         }

@@ -8,11 +8,9 @@ export namespace SharedCode {
   export interface IData {
     name: string;
     code: string;
-
     desc?: string;
     tags?: string[];
     fastModeKey?: string;
-    // category: string;
   }
 
   export interface ITreeItem {
