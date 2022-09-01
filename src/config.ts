@@ -9,7 +9,7 @@ export const PROJECT_SHAREDCODE_DIR = "/.xkool_sharedcode";
 
 export const ROOT_PATH: string =
   vscode.workspace.workspaceFolders[0] &&
-  vscode.workspace.workspaceFolders[0].uri.path;
+  vscode.workspace.workspaceFolders[0].uri.fsPath;
 
 export const CONFIG_PATH = path.join(ROOT_PATH, PROJECT_DIR, "config.js");
 
