@@ -10,6 +10,27 @@ export type FigmaTreeNode = {
   projectId: string;
 };
 
+export interface ReactData {
+  props: { name: string }[];
+  states: { name: string }[];
+  events: { name: string; id: string }[];
+  // callBacks: { name: string }[]
+}
+
+export enum ReactEvents {
+  onClick = "onClick",
+  onKeyDown = "onKeyDown",
+  onKeyUp = "onKeyUp",
+  onMouseDown = "onMouseDown",
+  onMouseUp = "onMouseUp",
+  onMouseMove = "onMouseUp",
+  onMouseEnter = "onMouseEnter",
+  onMouseLeave = "onMouseLeave",
+  onTouchStart = "onTouchStart",
+  onTouchMove = "onTouchMove",
+  onTouchEnd = "onTouchEnd",
+}
+
 export namespace Figma {
   export enum NodeTypes {
     GROUP = "GROUP",
@@ -55,6 +76,7 @@ export namespace Figma {
     width: number;
     height: number;
   }
+
   export interface NodeBase {
     id: string;
     name: string;
@@ -69,6 +91,7 @@ export namespace Figma {
         similarChildrenIndexes: number[];
       }[];
     };
+    reactData?: ReactData;
   }
 
   export interface NodeBaseLevel1 extends NodeBase {
@@ -93,10 +116,26 @@ export namespace Figma {
   export interface RECTANGLE extends NodeBaseLevel1 {
     d: number;
   }
+
+  export interface FillData {
+    color: { r: number; g: number; b: number };
+    opacity: number;
+    type: string;
+    visible: boolean;
+  }
   export interface TEXT extends NodeBaseLevel1 {
     characters: string;
     // style: React.CSSProperties;
-    style: any;
+    // style: any;
+    fontName: string;
+    fontSize: number;
+    fontWeight: number | string;
+    letterSpacing: { unit: string; value: number };
+    lineHeight: { unit: string; value: number };
+    textDecoration: string;
+    textAlignHorizontal: string;
+    textAlignVertical: string;
+    fills: FillData[];
   }
 
   export interface File {

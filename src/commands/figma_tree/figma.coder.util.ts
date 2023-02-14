@@ -1,10 +1,10 @@
 import { Figma } from "./figma.typing";
 
-function upperFirst(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 export class FigmaCoderUtil {
+  public static upperFirst(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   public static getTab(depth: number) {
     return new Array(depth).fill("\t").join("");
   }
@@ -14,6 +14,6 @@ export class FigmaCoderUtil {
   }
 
   public static getNodeComponentName(node: Figma.NodeBase) {
-    return `${upperFirst(node.name).replace(/[:\s\/\-]/g, "")}`;
+    return `${FigmaCoderUtil.upperFirst(node.name).replace(/[:\s\/\-]/g, "")}`;
   }
 }

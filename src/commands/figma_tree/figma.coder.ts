@@ -6,6 +6,19 @@ import { Figma } from "./figma.typing";
 const getTab = FigmaCoderUtil.getTab;
 const getNodeClassName = FigmaCoderUtil.getNodeClassName;
 
+const getContentCode = (node: Figma.NodeBaseLevel1, content?: string) => {
+  if (!node.reactData) {
+    return content || node.name;
+  }
+  const { props, states } = node.reactData;
+  if (props.length) {
+    return `{props.${props[0].name}}`;
+  } else if (states.length) {
+    return `{${states[0].name}}`;
+  }
+  return content || node.name;
+};
+
 function CommonCSSProvider(
   node: Figma.NodeBaseLevel1,
   parent: Figma.NodeBaseLevel1 | undefined,
@@ -85,9 +98,9 @@ function CommonCSSProvider(
   //   );
   // }
 
-  cssCode += `${cssClassName}{${cssLineCodes
+  cssCode += `.${cssClassName}\n{${cssLineCodes
     .map((code) => `\t${code}`)
-    .join("\n")}}`;
+    .join("\n")}\n}\n`;
 
   return {
     cssClassName,
@@ -99,7 +112,8 @@ function CommonNodeHtmlProvider(
   node: Figma.NodeBaseLevel1,
   parent: Figma.NodeBaseLevel1 | undefined,
   depth: number,
-  className: string
+  className: string,
+  eventHandlerNameMap: Map<string, string>
 ) {
   let htmlCodePrev: string = "";
   let htmlCodeBack: string = "";
@@ -122,13 +136,13 @@ function CommonNodeHtmlProvider(
   switch (node.type) {
     default: {
       if (!node.children || node.children.length === 0) {
-        contentCode = node.name;
+        contentCode = getContentCode(node);
         selfCloseTag = false;
       }
       break;
     }
     case Figma.NodeTypes.VECTOR: {
-      tag = "Icon";
+      tag = `Icon${node.name.replace(/[\s\(\)]/g, "")}`;
       styleCode = `style={{ fontSize: ${Math.ceil(
         node.absoluteBoundingBox.width
       )} }}`;
@@ -138,12 +152,15 @@ function CommonNodeHtmlProvider(
       if (node.inferedData?.isButton) {
         tag = "Button";
         selfCloseTag = false;
-        contentCode = node.name;
+        contentCode = getContentCode(node);
       }
       break;
     }
   }
-
+  const eventCode = FigmaReactCoder.getElementEventCode(
+    node,
+    eventHandlerNameMap
+  );
   htmlCodePrev += FigmaReactCoder.getReactHtmlPrevCode({
     depth,
     tag,
@@ -153,6 +170,7 @@ function CommonNodeHtmlProvider(
     selfCloseTag,
     contentCode,
     needBreakLine,
+    eventCode,
   });
 
   if (!selfCloseTag) {
@@ -276,9 +294,9 @@ function FrameCSSProvider(
     );
   }
 
-  cssCode += `${cssClassName}{${cssLineCodes
+  cssCode += `.${cssClassName}\n{${cssLineCodes
     .map((code) => `\t${code}`)
-    .join("\n")}}`;
+    .join("\n")}\n}\n`;
 
   return {
     cssClassName,
@@ -290,7 +308,8 @@ function FrameHtmlProvider(
   node: Figma.Frame,
   parent: Figma.NodeBase | undefined,
   cssClassName: string,
-  depth: number
+  depth: number,
+  eventHandlerNameMap: Map<string, string>
 ) {
   let htmlCodePrev: string = "";
   let htmlCodeBack: string = "";
@@ -312,6 +331,11 @@ function FrameHtmlProvider(
     )}<Input className={styles.${cssClassName}} ${iconCode} />\n`;
   }
 
+  const eventCode = FigmaReactCoder.getElementEventCode(
+    node,
+    eventHandlerNameMap
+  );
+
   htmlCodePrev += FigmaReactCoder.getReactHtmlPrevCode({
     depth,
     tag,
@@ -321,6 +345,7 @@ function FrameHtmlProvider(
     selfCloseTag: false,
     contentCode: "",
     needBreakLine: true,
+    eventCode,
   });
 
   htmlCodeBack += FigmaReactCoder.getReactHtmlBackCode({
@@ -336,6 +361,28 @@ function FrameHtmlProvider(
   };
 }
 
+function getTextColorStr(node: Figma.TEXT) {
+  let nodeColor = "";
+  if (node.fills.length === 1) {
+    const nfill = node.fills[0];
+    const toNum = (num: number) => Math.round(num * 255);
+    nodeColor = `rgba(${toNum(nfill.color.r)}, ${toNum(nfill.color.g)}, ${toNum(
+      nfill.color.b
+    )}, ${nfill.opacity})`;
+  }
+  return nodeColor;
+}
+
+function getTextClassName(node: Figma.TEXT) {
+  if (node.fontWeight !== 400 && node.fontWeight !== "normal") {
+    return "Title";
+  }
+  // TODO: 更详细的逻辑是
+  // 在flex容器左边的可以叫 Label
+  // 存在子树的叶节点叫 Content
+  return "Text";
+}
+
 function TextCSSProvider(
   node: Figma.TEXT,
   textStyleCodeMap: Map<string, { className: string; codes: string[] }>
@@ -344,37 +391,34 @@ function TextCSSProvider(
   let cssClassName: string = "";
   let cssCode: string = "";
   let textStyleKey = "";
-  if (node.style) {
-    textStyleKey += `${node.style.fontSize}${node.style.fontWeight}${node.style.color}`;
 
-    if (textStyleCodeMap.has(textStyleKey)) {
-      const data = textStyleCodeMap.get(textStyleKey)!;
-      cssClassName = data.className;
-      cssLineCodes = data.codes;
-    } else {
-      if (node.style.fontWeight) {
-        cssLineCodes.push(`font-weight: ${node.style.fontWeight}`);
-      }
-      if (node.style.fontSize) {
-        cssLineCodes.push(`font-size: ${node.style.fontSize}px`);
-      }
-      if (node.style.color) {
-        cssLineCodes.push(`color: ${node.style.color}`);
-      }
-      cssClassName = ".Text" + getNodeClassName(node);
+  const nodeColor = getTextColorStr(node);
+
+  textStyleKey += `${node.fontSize}${node.fontWeight}${nodeColor}`;
+  if (textStyleCodeMap.has(textStyleKey)) {
+    const data = textStyleCodeMap.get(textStyleKey)!;
+    cssClassName = data.className;
+    cssLineCodes = data.codes;
+  } else {
+    if (node.fontWeight) {
+      cssLineCodes.push(`font-weight: ${node.fontWeight};`);
     }
-  }
-
-  cssCode += `${cssClassName}{${cssLineCodes
-    .map((code) => `\t${code}`)
-    .join("\n")}}`;
-
-  if (textStyleKey) {
+    if (node.fontSize) {
+      cssLineCodes.push(`font-size: ${node.fontSize}px;`);
+    }
+    if (nodeColor) {
+      cssLineCodes.push(`color: ${nodeColor};`);
+    }
+    cssClassName = "Text" + getTextClassName(node);
     textStyleCodeMap.set(textStyleKey, {
       className: cssClassName,
       codes: cssLineCodes,
     });
   }
+
+  cssCode += `.${cssClassName}{\n${cssLineCodes
+    .map((code) => `\t${code}`)
+    .join("\n")}\n}\n`;
 
   return {
     cssClassName,
@@ -386,6 +430,7 @@ function TextHtmlProvider(
   node: Figma.TEXT,
   depth: number,
   cssClassName: string,
+  eventHandlerNameMap: Map<string, string>,
   parent: Figma.NodeBase | undefined
 ) {
   let htmlCodePrev = "";
@@ -400,8 +445,8 @@ function TextHtmlProvider(
     } else {
       tag = "span";
     }
-  } else if (node.style.fontSize) {
-    const fontSize = node.style.fontSize;
+  } else if (node.fontSize) {
+    const fontSize = node.fontSize;
     if (fontSize >= 40) {
       tag = "h0";
     } else if (fontSize < 40 && fontSize >= 32) {
@@ -420,10 +465,19 @@ function TextHtmlProvider(
   if (cssClassName) {
     classNameCode = `className={styles.${cssClassName}}`;
   }
+  const eventCode = FigmaReactCoder.getElementEventCode(
+    node,
+    eventHandlerNameMap
+  );
+  htmlCodePrev += `${getTab(depth)}<${tag}`;
+  if (classNameCode) {
+    htmlCodePrev += ` ${classNameCode}`;
+  }
+  if (eventCode) {
+    htmlCodePrev += ` ${eventCode}`;
+  }
 
-  htmlCodePrev += `${getTab(depth)}<${tag} ${classNameCode}>${
-    node.characters
-  }</${tag}>\n`;
+  htmlCodePrev += `>${getContentCode(node, node.characters)}</${tag}>\n`;
   return {
     htmlCodePrev,
     htmlCodeBack,
@@ -468,11 +522,9 @@ export class FigmaProjectCodeProvider {
   traverseByDFSGetCode(
     node: Figma.NodeBaseLevel1,
     parent: Figma.NodeBaseLevel1 | undefined,
-    {
-      depth,
-      textStyleCodeMap,
-    }: {
+    args: {
       depth: number;
+      eventHandlerNameMap: Map<string, string>;
       textStyleCodeMap: Map<string, { className: string; codes: string[] }>;
     }
   ): {
@@ -482,10 +534,7 @@ export class FigmaProjectCodeProvider {
   } {
     // 跳过的情况(忽略无效空节点)
     if (node.children && node.children.length === 1) {
-      return this.traverseByDFSGetCode(node.children[0], parent, {
-        textStyleCodeMap,
-        depth,
-      });
+      return this.traverseByDFSGetCode(node.children[0], parent, args);
     }
 
     let htmlCode: string = "";
@@ -502,16 +551,16 @@ export class FigmaProjectCodeProvider {
             const child = node.children[firstIndex];
             if (child) {
               const ret = this.traverseByDFSGetCode(child, node, {
-                textStyleCodeMap,
-                depth: depth + 1,
+                ...args,
+                depth: args.depth + 1,
               });
               cssCode += ret.cssCode;
               const componentName = FigmaCoderUtil.getNodeComponentName(child);
               extraCode += `const ${componentName} = () => {
               return (${ret.htmlCode})
-            }`;
+            }\n`;
               const componentHtmlCode = `${getTab(
-                depth
+                args.depth
               )}<${componentName} />\n`;
               node.similarData.similarChildrenGroup[
                 sindex
@@ -538,11 +587,12 @@ export class FigmaProjectCodeProvider {
           return;
         }
         const ret = this.traverseByDFSGetCode(child, node, {
-          textStyleCodeMap,
-          depth: depth + 1,
+          ...args,
+          depth: args.depth + 1,
         });
         cssCode += ret.cssCode;
         htmlCode += ret.htmlCode;
+        extraCode += ret.extraCode;
       });
     }
 
@@ -552,14 +602,15 @@ export class FigmaProjectCodeProvider {
     switch (node.type) {
       default: {
         const cssData = CommonCSSProvider(node, parent, {
-          depth,
+          depth: args.depth,
           isAbsolteLayout: false,
         });
         const htmlData = CommonNodeHtmlProvider(
           node,
           parent,
-          depth,
-          cssData.cssClassName
+          args.depth,
+          cssData.cssClassName,
+          args.eventHandlerNameMap
         );
         htmlCodePrevNode += htmlData.htmlCodePrev;
         htmlCodeBackNode += htmlData.htmlCodeBack;
@@ -568,14 +619,15 @@ export class FigmaProjectCodeProvider {
       }
       case Figma.NodeTypes.FRAME: {
         const cssData = FrameCSSProvider(node as Figma.Frame, parent, {
-          depth,
+          depth: args.depth,
           isAbsolteLayout: false,
         });
         const htmlData = FrameHtmlProvider(
           node as Figma.Frame,
           parent,
           cssData.cssClassName,
-          depth
+          args.depth,
+          args.eventHandlerNameMap
         );
         htmlCodePrevNode += htmlData.htmlCodePrev;
         htmlCodeBackNode += htmlData.htmlCodeBack;
@@ -583,11 +635,15 @@ export class FigmaProjectCodeProvider {
         break;
       }
       case Figma.NodeTypes.TEXT: {
-        const cssData = TextCSSProvider(node as Figma.TEXT, textStyleCodeMap);
+        const cssData = TextCSSProvider(
+          node as Figma.TEXT,
+          args.textStyleCodeMap
+        );
         const htmlData = TextHtmlProvider(
           node as Figma.TEXT,
-          depth,
+          args.depth,
           cssData.cssClassName,
+          args.eventHandlerNameMap,
           parent
         );
         htmlCodePrevNode += htmlData.htmlCodePrev;
@@ -602,6 +658,33 @@ export class FigmaProjectCodeProvider {
       htmlCode: `${htmlCodePrevNode}${htmlCode}${htmlCodeBackNode}`,
       cssCode,
     };
+  }
+
+  traverseCopySimilarSubTree(
+    firstChild: Figma.NodeBase,
+    otherSimilarChilds: Figma.NodeBase[]
+  ) {
+    const findOtherReactData = otherSimilarChilds.find(
+      (child) => child.reactData
+    );
+    const findOtherInferData = otherSimilarChilds.find(
+      (child) => child.inferedData
+    );
+    if (findOtherReactData) {
+      firstChild.reactData = findOtherReactData.reactData;
+      findOtherReactData.reactData = undefined;
+    }
+    if (findOtherInferData) {
+      firstChild.inferedData = findOtherReactData.inferedData;
+      findOtherInferData.inferedData = undefined;
+    }
+    firstChild.children.forEach((childChild, childChildIndex) => {
+      let otherChilds: Figma.NodeBase[] = [];
+      otherSimilarChilds.forEach((sChild) => {
+        otherChilds.push(sChild.children[childChildIndex]!);
+      });
+      this.traverseCopySimilarSubTree(childChild, otherChilds);
+    });
   }
 
   traverseSimilarSubTree(node: Figma.NodeBase): string {
@@ -628,6 +711,9 @@ export class FigmaProjectCodeProvider {
       childTreeIdMap.forEach((childIndexes) => {
         if (childIndexes.length > 1) {
           if (!node.similarData) {
+            // 找其他有数据的，复制
+            const allChild = childIndexes.map((ci) => node.children[ci]);
+            this.traverseCopySimilarSubTree(allChild[0], allChild.slice(1));
             node.similarData = {
               similarChildrenFirstIndexGroup: [],
               similarChildrenGroup: [],
@@ -655,6 +741,44 @@ export class FigmaProjectCodeProvider {
     }
   }
 
+  getHandleEventsCode(
+    events: { name: string; id: string }[],
+    eventHandlerNameMap: Map<string, string>
+  ) {
+    let code = "";
+    if (events.length) {
+      events.forEach((eventData) => {
+        const handlerName = eventHandlerNameMap.get(eventData.id) || "";
+        code += `const ${handlerName} = useCallBack(() => {}, []);\n`;
+      });
+    }
+    return code;
+  }
+
+  getStatesCode(states: { name: string }[]) {
+    let code = "";
+    if (states.length) {
+      states.forEach((state) => {
+        code += `const [${state.name}, set${FigmaCoderUtil.upperFirst(
+          state.name
+        )}] = useState<any>();\n`;
+      });
+    }
+    return code;
+  }
+
+  getPropsCode(props: { name: string }[]) {
+    let code = "";
+    if (props.length) {
+      code += "props: {";
+      props.forEach((prop) => {
+        code += `${prop.name}: any;`;
+      });
+      code += "}";
+    }
+    return code;
+  }
+
   getCode(selectedTopNode: Figma.NodeBaseLevel1) {
     const textStyleCodeMap: Map<
       string,
@@ -672,23 +796,58 @@ export class FigmaProjectCodeProvider {
     // 组件推断分析
     this.traverseInferNodeComponent(selectedTopNode);
 
+    const allChildProps: { name: string }[] = [];
+    const allChildStates: { name: string }[] = [];
+    const allChildEvents: { name: string; id: string }[] = [];
+    const eventHandlerNameMap: Map<string, string> = new Map();
+    this.traverseNodeByDFS((cnode) => {
+      if (cnode.reactData?.props) {
+        allChildProps.push(...cnode.reactData.props);
+      }
+      if (cnode.reactData?.states) {
+        allChildStates.push(...cnode.reactData.states);
+      }
+      if (cnode.reactData?.events) {
+        cnode.reactData?.events.forEach((eventData) => {
+          eventHandlerNameMap.set(
+            eventData.id,
+            `handle${eventData.name.replace("on", "")}${allChildEvents.length}`
+          );
+        });
+        allChildEvents.push(...cnode.reactData.events);
+      }
+      return false;
+    }, selectedTopNode);
+
     const data = this.traverseByDFSGetCode(selectedTopNode, undefined, {
       textStyleCodeMap,
+      eventHandlerNameMap,
       depth: 0,
     });
 
     let reactCode = "";
-    if (data.extraCode) {
+
+    const isComponentNode =
+      allChildProps.length > 0 ||
+      allChildStates.length > 0 ||
+      allChildEvents.length > 0;
+
+    if (data.extraCode || isComponentNode) {
       reactCode += data.extraCode;
       reactCode += `\n`;
       reactCode += `const ${FigmaCoderUtil.getNodeComponentName(
         selectedTopNode
-      )} = () => (${data.htmlCode})`;
+      )} = (${this.getPropsCode(allChildProps)}) => {
+        ${this.getStatesCode(allChildStates)}
+        ${this.getHandleEventsCode(allChildEvents, eventHandlerNameMap)}
+        return (
+          ${data.htmlCode}
+        )
+      }`;
     } else {
       reactCode = data.htmlCode;
     }
 
-    console.log(data.cssCode, "cssCode");
     return { cssCode: data.cssCode, reactCode };
   }
 }

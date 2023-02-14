@@ -1,6 +1,23 @@
 import { FigmaCoderUtil } from "./figma.coder.util";
+import { Figma } from "./figma.typing";
 
 export class FigmaReactCoder {
+  public static getElementEventCode(
+    node: Figma.NodeBaseLevel1,
+    eventHandlerNameMap: Map<string, string>
+  ) {
+    let eventCode = "";
+    if (node.reactData) {
+      node.reactData.events.forEach((eventData) => {
+        eventCode += `${eventData.name}={${eventHandlerNameMap.get(
+          eventData.id
+        )}} `;
+      });
+    }
+
+    return eventCode;
+  }
+
   public static getReactHtmlPrevCode({
     depth,
     tag,
@@ -10,6 +27,7 @@ export class FigmaReactCoder {
     contentCode,
     selfCloseTag,
     needBreakLine,
+    eventCode,
   }: {
     depth: number;
     tag: string;
@@ -19,6 +37,7 @@ export class FigmaReactCoder {
     selfCloseTag: boolean;
     contentCode: string;
     needBreakLine: boolean;
+    eventCode?: string;
   }) {
     let htmlCode = "";
     if (useTab) {
@@ -31,6 +50,10 @@ export class FigmaReactCoder {
     if (styleCode) {
       htmlCode += ` ${styleCode}`;
     }
+    if (eventCode) {
+      htmlCode += ` ${eventCode}`;
+    }
+
     if (selfCloseTag) {
       htmlCode += "/";
     }
